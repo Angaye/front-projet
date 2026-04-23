@@ -6,39 +6,45 @@
 
     <div class="container py-5 text-white">
       <h1 class="mb-4">
-        Séries populaires 🎬
+        Résultats de recherche 🔍
       </h1>
 
-      <div class="row">
+     <div class="row">
         <SeriesCard
-         v-for="series in seriesList"
-        :key="series.id"
-        :series="series"
-      />
-</div>
+          v-for="item in searchResults"
+          :key="item.show?.id || item.id"
+          :series="item.show || item"
+         />
+    </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 
 import Navbar from "../components/Navbar.vue";
 import LoginModal from "../components/LoginModal.vue";
 import RegisterModal from "../components/RegisterModal.vue";
 import SeriesCard from "../components/SeriesCard.vue";
 
-import { getPopularSeries } from "../services/series";
+import { searchSeries } from "../services/series";
 
-const seriesList = ref([]);
+const route = useRoute();
+const searchResults = ref([]);
 
-const loadPopularSeries = async () => {
+const loadSearchResults = async () => {
   try {
-    const response = await getPopularSeries();
+    const query = route.query.q;
 
-    console.log("DATA API:", response.data);
+    if (!query) return;
 
-    seriesList.value = Array.isArray(response.data)
+    const response = await searchSeries(query);
+
+    console.log(response.data);
+
+    searchResults.value = Array.isArray(response.data)
       ? response.data
       : response.data.results ||
         response.data.data ||
@@ -49,8 +55,7 @@ const loadPopularSeries = async () => {
   }
 };
 
-
 onMounted(() => {
-  loadPopularSeries();
+  loadSearchResults();
 });
 </script>
