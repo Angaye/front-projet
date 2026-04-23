@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 
 import Navbar from "../components/Navbar.vue";
@@ -58,4 +58,11 @@ const loadSearchResults = async () => {
 onMounted(() => {
   loadSearchResults();
 });
+
+watch(
+  () => route.query.q,
+  () => {
+    loadSearchResults();
+  }
+);
 </script>

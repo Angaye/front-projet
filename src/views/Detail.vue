@@ -36,11 +36,19 @@
 </p>
 
 <button
+  v-if="token"
   class="btn btn-danger mt-3 mb-4"
   @click="addToFavorites"
 >
   ❤️ Ajouter aux favoris
 </button>
+
+<p
+  v-else
+  class="text-muted mt-3"
+>
+  Connectez-vous pour ajouter aux favoris ❤️
+</p>
 
 <p class="text-dark">
   {{ cleanSummary(series.summary) }}
@@ -52,11 +60,15 @@
   ⭐ Avis & Commentaires
 </h3>
 
-<div class="card p-4 shadow mb-4">
+<div
+  v-if="token"
+  class="card p-4 shadow mb-4"
+>
   <div class="mb-3">
     <label class="form-label">
       Note (/10)
     </label>
+
     <input
       v-model="reviewRating"
       type="number"
@@ -70,6 +82,7 @@
     <label class="form-label">
       Commentaire
     </label>
+
     <textarea
       v-model="reviewComment"
       class="form-control"
@@ -83,6 +96,13 @@
   >
     Publier mon avis
   </button>
+</div>
+
+<div
+  v-else
+  class="alert alert-secondary"
+>
+  Veuillez vous inscrire ou vous connecter pour laisser un avis ⭐
 </div>
 
 <div
@@ -264,6 +284,9 @@ const deleteReview = (id) => {
 
   alert("Avis supprimé ❌");
 };
+
+const token =
+  localStorage.getItem("token");
 
 onMounted(() => {
   loadSeriesDetail();
